@@ -1,1 +1,23 @@
+# Файл: netlify.toml
 
+[build]
+  # Папка, где находится ваш фронтенд (crm/index.php)
+  # Если ваш index.php находится в корневой папке репозитория, используйте ""
+  publish = "crm"
+  # Если у вас есть команда сборки, она идет сюда. Если нет, оставьте пустой.
+  command = ""
+
+[functions]
+  # Папка, где Netlify будет искать ваши Serverless Functions
+  directory = "netlify/functions"
+  # Настройки CORS (для предотвращения ошибки Preflight)
+  external_node_modules = ["express"]
+  node_bundler = "esbuild"
+
+# ⭐️ Ключевой момент: Перенаправление API
+# Это перенаправляет все запросы с /api/chat на вашу функцию
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/api" # Имя вашего файла функции (api.js)
+  status = 200
+  force = true # Принудительное перенаправление
