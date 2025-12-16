@@ -1,6 +1,10 @@
 {
-  "name": "netlify-ai-function",
+  "name": "mts-ai-backend-root",
   "version": "1.0.0",
+  "description": "Root package file for Netlify to satisfy the build process and install dependencies for functions.",
+  "scripts": {
+    "build": "echo 'No build command needed for root'"
+  },
   "dependencies": {
     "express": "^4.19.2",
     "serverless-http": "^3.2.0",
