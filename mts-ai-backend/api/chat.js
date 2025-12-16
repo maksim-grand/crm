@@ -19,19 +19,13 @@ const model = "gemini-1.5-flash";
 const allowedOrigin = [
     'http://localhost', 
     'http://127.0.0.1', 
-    // !!! ДОБАВИТЬ РЕАЛЬНЫЙ ДОМЕН САЙТА ПОСЛЕ ПУБЛИКАЦИИ (например, 'https://mts-parts.kz')
 ]; 
 
-app.use(cors({ 
-    origin: (origin, callback) => {
-        // Разрешить, если источник есть в списке или это запрос без Origin (например, Postman)
-        if (!origin || allowedOrigin.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error(`Не разрешено политикой CORS: ${origin}`));
-        }
-    },
-    methods: ['POST', 'OPTIONS'], // Разрешаем POST и OPTIONS
+// УПРОЩЕННАЯ АГРЕССИВНАЯ НАСТРОЙКА CORS ДЛЯ ЛОКАЛЬНОГО ТЕСТИРОВАНИЯ
+app.use(cors({
+    origin: '*', // Временно разрешаем все источники (потом заменим на allowedOrigin)
+    methods: ['GET', 'POST', 'OPTIONS'], // Обязательно разрешаем OPTIONS!
+    allowedHeaders: ['Content-Type'], // Разрешаем заголовок, который используется в POST
 }));
 
 app.use(express.json());
@@ -93,3 +87,4 @@ app.post('/api/chat', async (req, res) => {
 
 // Экспортируем функцию для Vercel
 module.exports.handler = serverless(app);
+
