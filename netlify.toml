@@ -1,19 +1,15 @@
 # Файл: netlify.toml
 
 [build]
-  # Папка, которую Netlify будет отображать как основной сайт
   publish = "crm"
-  # Оставляем команду сборки пустой, так как она не нужна для PHP/JS
   command = ""
 
 [functions]
-  # Папка, где Netlify будет искать ваши Serverless Functions
   directory = "netlify/functions"
-  # Убедитесь, что эти зависимости включены
+  # ⭐️ ОБЯЗАТЕЛЬНО: Указываем все зависимости, которые используются в функции
   external_node_modules = ["express", "serverless-http", "@google/genai"]
   node_bundler = "esbuild"
 
-# Ключевой момент: Перенаправление API
 [[redirects]]
   from = "/api/chat"
   to = "/.netlify/functions/api"
