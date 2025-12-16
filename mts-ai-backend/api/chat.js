@@ -1,8 +1,7 @@
 // Файл: api/chat.js
-// Наш Serverless Function для Vercel
+// Serverless Function для Vercel
 
 const express = require('express');
-const cors = require('cors');
 const serverless = require('serverless-http');
 const { GoogleGenAI } = require('@google/genai');
 
@@ -12,36 +11,13 @@ const app = express();
 const ai = new GoogleGenAI({}); 
 const model = "gemini-1.5-flash"; 
 
-// ==========================================================
-// ⭐️ ШАГ 1: НАСТРОЙКА CORS (Разрешенные домены)
-// Важно: разрешаем localhost для локального тестирования
-// ==========================================================
-const allowedOrigin = [
-    'http://localhost', 
-    'http://127.0.0.1', 
-]; 
-
-// УПРОЩЕННАЯ АГРЕССИВНАЯ НАСТРОЙКА CORS ДЛЯ ЛОКАЛЬНОГО ТЕСТИРОВАНИЯ
-app.use(cors({
-    origin: '*', // Временно разрешаем все источники (потом заменим на allowedOrigin)
-    methods: ['GET', 'POST', 'OPTIONS'], // Обязательно разрешаем OPTIONS!
-    allowedHeaders: ['Content-Type'], // Разрешаем заголовок, который используется в POST
-}));
+// Поскольку CORS теперь обрабатывается через vercel.json, 
+// мы можем удалить сложные настройки app.use(cors) и app.options.
 
 app.use(express.json());
 
 // ==========================================================
-// ⭐️ ШАГ 2: ОБРАБОТКА OPTIONS (Preflight)
-// Это устраняет ошибку 404 Preflight
-// ==========================================================
-app.options('/api/chat', (req, res) => {
-    // Если CORS middleware разрешил запрос, просто отправляем успешный ответ.
-    res.status(200).send();
-});
-
-
-// ==========================================================
-// ⭐️ ШАГ 3: АКТУАЛЬНАЯ СИСТЕМНАЯ ИНСТРУКЦИЯ И ЛОГИКА
+// ⭐️ СИСТЕМНАЯ ИНСТРУКЦИЯ И ЛОГИКА
 // ==========================================================
 const systemInstruction = `
     Ты — дружелюбный и компетентный ИИ-помощник интернет-магазина "МехТехСервис Кокшетау" (сельхоззапчасти).
@@ -62,8 +38,10 @@ const systemInstruction = `
 // Маршрут для POST-запроса (логика чата)
 app.post('/api/chat', async (req, res) => {
     
-    // Дополнительная проверка не требуется, так как она уже выполняется в app.use(cors)
-    
+    // Добавление заголовка Access-Control-Allow-Origin здесь является избыточным, 
+    // но если vercel.json не сработает, это может помочь. 
+    // Однако, вернее всего положиться на vercel.json.
+
     try {
         const chatHistory = req.body.history || [];
         
@@ -87,4 +65,3 @@ app.post('/api/chat', async (req, res) => {
 
 // Экспортируем функцию для Vercel
 module.exports.handler = serverless(app);
-
